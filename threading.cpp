@@ -58,7 +58,7 @@ static void generate_random_data_file(const char* fileName, i32 upperBoundary = 
 static void feed_queue_from_data_file(const char* fileName, std::vector<i32>& v)
 {
     std::ifstream f(fileName, std::ios::binary);
-    
+
     if (!f.is_open())
         throw std::runtime_error("The file could not be opened");
 
@@ -81,8 +81,6 @@ std::vector<i32> v2;
 void multithreaded_fn()
 {
     return std::accumulate(v)
-
-
 }
 
 constexpr i32 numberOfThreads = 2;
@@ -91,19 +89,19 @@ int main()
 {
     std::vector<std::thread> threads;
     i64 res_threaded = 0;
-    
+
     get_time(start);
     remove_file("random.bin");
     generate_random_data_file("random.bin", 1'000, 100'000'000);
     get_time(end);
     std::cout << "generate_random_data: " << get_duration() << " ms\n";
-    
+
     get_time(start);
 
     feed_queue_from_data_file("random.bin", v1);
     get_time(end);
     std::cout << "feed_queue_from_file: " << get_duration() << " ms\n";
-    
+
     // threaded
 
     get_time(start);
