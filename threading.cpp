@@ -78,14 +78,23 @@ static i64 sequential_check(const std::vector<i32>& v)
 
 static void worker_thread(const std::vector<i32>& vec, u64 begin, u64 end, i64& result)
 {
+<<<<<<< HEAD
     result = std::accumulate(vec.begin() + begin, vec.begin() + end, (i64)0);
+=======
+    return std::accumulate(v)
+>>>>>>> 1827684b68dc8e2cc4c18fa1738791a005f8f950
 }
 
 constexpr i32 numberOfThreads = 16;
 
 int main()
 {
+<<<<<<< HEAD
     std::vector<i32> v;
+=======
+    std::vector<std::thread> threads;
+    i64 res_threaded = 0;
+>>>>>>> 1827684b68dc8e2cc4c18fa1738791a005f8f950
 
     get_time(start);
     remove_file("random.bin");
@@ -98,11 +107,16 @@ int main()
     feed_queue_from_data_file("random.bin", v);
     get_time(end);
     std::cout << "feed_queue_from_file: " << get_duration() << " ms\n";
+<<<<<<< HEAD
     do
     {
         // threaded
         get_time(start);
         u64 chunkSize = v.size() / numberOfThreads;
+=======
+
+    // threaded
+>>>>>>> 1827684b68dc8e2cc4c18fa1738791a005f8f950
 
         i64 res_threaded = 0;
         std::vector<i64> partials(numberOfThreads, 0);

@@ -3,5 +3,8 @@
 **/*.obj
 **/*.pdb
 **/*.ilk
+**/*.out
+
+**/.DS_Store
 
 
