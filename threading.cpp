@@ -12,6 +12,8 @@
 
 using i64 = int64_t;
 using i32 = int32_t;
+using u32 = uint32_t;
+using u64 = uint64_t;
 
 std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
 
@@ -58,7 +60,7 @@ static void generate_random_data_file(const char* fileName, i32 upperBoundary = 
 static void feed_queue_from_data_file(const char* fileName, std::vector<i32>& v)
 {
     std::ifstream f(fileName, std::ios::binary);
-    
+
     if (!f.is_open())
         throw std::runtime_error("The file could not be opened");
 
@@ -68,54 +70,70 @@ static void feed_queue_from_data_file(const char* fileName, std::vector<i32>& v)
         v.emplace_back(num);
 }
 
-static i64 sequential_check(std::vector<i32>& v)
+static i64 sequential_check(const std::vector<i32>& v)
 {
     return (i64)std::accumulate(v.begin(), v.end(), (i64)0);
 }
 
 
-std::mutex m;
-std::vector<i32> v1;
-std::vector<i32> v2;
-
-void multithreaded_fn()
+static void worker_thread(const std::vector<i32>& vec, u64 begin, u64 end, i64& result)
 {
-    return std::accumulate(v)
-
-
+    result = std::accumulate(vec.begin() + begin, vec.begin() + end, (i64)0);
 }
 
-constexpr i32 numberOfThreads = 2;
+constexpr i32 numberOfThreads = 16;
 
 int main()
 {
-    std::vector<std::thread> threads;
-    i64 res_threaded = 0;
-    
+    std::vector<i32> v;
+
     get_time(start);
     remove_file("random.bin");
     generate_random_data_file("random.bin", 1'000, 100'000'000);
     get_time(end);
     std::cout << "generate_random_data: " << get_duration() << " ms\n";
-    
+
     get_time(start);
 
-    feed_queue_from_data_file("random.bin", v1);
+    feed_queue_from_data_file("random.bin", v);
     get_time(end);
     std::cout << "feed_queue_from_file: " << get_duration() << " ms\n";
-    
-    // threaded
+    do
+    {
+        // threaded
+        get_time(start);
+        u64 chunkSize = v.size() / numberOfThreads;
 
-    get_time(start);
+        i64 res_threaded = 0;
+        std::vector<i64> partials(numberOfThreads, 0);
+        std::vector<std::thread> threads;
 
-    get_time(end);
-    std::cout << "feed_queue_from_file: " << get_duration() << " ms\n";
+        for (u32 i = 0; i < numberOfThreads; i++)
+        {
+            u64 begin = i * chunkSize;
+            u64 end = i == (numberOfThreads - 1) ? v.size() : begin + chunkSize;
 
-    // sequential
-    get_time(start);
-    i64 res_seq = sequential_check(v1);
-    get_time(end);
-    std::cout << "sequential_check: " << get_duration() << " ms\n";
-    std::cout << "SEQUENTIAL RESULT = " << res_seq << '\n';
+            threads.emplace_back(worker_thread, std::cref(v), begin, end, std::ref(partials[i]));
+        }
+
+        for (auto& thread : threads)
+            thread.join();
+
+        res_threaded = std::accumulate(partials.begin(), partials.end(), (i64)0);
+
+        get_time(end);
+        std::cout << "threading_check: " << get_duration() << " ms\n";
+        std::cout << "THREADING RESULT = " << res_threaded << '\n';
+
+        // sequential
+        get_time(start);
+        i64 res_seq = sequential_check(v);
+        get_time(end);
+        std::cout << "sequential_check: " << get_duration() << " ms\n";
+        std::cout << "SEQUENTIAL RESULT = " << res_seq << '\n';
+
+        if (res_seq != res_threaded)
+            throw std::runtime_error("Failed");
+    } while(0);
     return 0;
 }
