@@ -1,5 +1,4 @@
-#include <format>
-#include <vector>
+#include <string>
 #include <print>
 
 int main()
@@ -7,8 +6,6 @@ int main()
     std::string str = "Kokotina na n-tu";
 
 
-    std::print("Hello, World!{}", str);
+    std::println("Hello, World!{}", str);
     return 0;
 }
-
-

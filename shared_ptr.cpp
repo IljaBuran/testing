@@ -4,7 +4,7 @@
 #include <cassert>
 #include <type_traits>
 
-#include "common.h"
+#include "common.hpp"
 
 namespace my
 {

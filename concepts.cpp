@@ -1,4 +1,4 @@
-#include "common.h"
+#include "common.hpp"
 
 #include <iostream>
 #include <concepts>
@@ -18,6 +18,7 @@ void Print(const T& t)
 
 void TestPrint()
 {
+    int
     i32 i = 312;
     std::vector<i32> vec = {1, 2, 3};
 
@@ -89,20 +90,24 @@ void TestIncrement()
     i32 i1 = 312;
     std::vector<i32> vec = {1, 2, 3};
 
-    MyString s1 = "Hello, World!";
+    while (true)
+    {
+        MyString s1 = "Hello, World!";
 
-    // std::cout << i1 << '\n';
-    // PreIncrement(i1);
-    // std::cout << i1 << '\n';
+        // std::cout << i1 << '\n';
+        // PreIncrement(i1);
+        // std::cout << i1 << '\n';
 
-    Print(PreIncrement(i1));
-    Print(PreIncrement(s1));
+        Print(PreIncrement(i1));
+        Print(PreIncrement(s1));
 
-    Print(PostIncrement(i1));
-    Print(PostIncrement(s1));
+        Print(PostIncrement(i1));
+        Print(PostIncrement(s1));
 
-    Print(s1);
-    // Print(Add(cs1, cs2));
+        Print(s1);
+        // Print(Add(cs1, cs2));
+    }
+
 }
 
 i32 main()

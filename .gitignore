@@ -4,7 +4,7 @@
 **/*.pdb
 **/*.ilk
 **/*.out
-
 **/.DS_Store
 
-
+.zed
+out/

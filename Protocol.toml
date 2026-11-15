@@ -1,0 +1,38 @@
+# Wire format:
+#   message:  [u32 payloadSize][u16 type][payload]
+#   integers: little-endian
+#   string:   [u32 byteLength][UTF-8 bytes], no terminator
+
+[[header]]
+version = 1
+maxPayloadSize = 4194304 # 4 MiB; must fit the engine's 8 MiB outgoing buffer. Header is fixed: u32 size + u16 type
+
+[[message]]
+name      = "Hello"
+id        = 1
+fields    = [
+  { name = "protocolVersion", type = "u16" },
+  { name = "engineMajor",     type = "u16" },
+  { name = "engineMinor",     type = "u16" },
+  { name = "enginePatch",     type = "u16" },
+]
+
+[[message]]
+name   = "Quit"
+id     = 2
+fields = []
+
+[[message]]
+name      = "Log"
+id        = 3
+fields    = [
+  { name = "level", type = "u8" },
+  { name = "text",  type = "string" },
+]
+
+[[message]]
+name      = "WindowHandle"
+id        = 4
+fields    = [
+  { name = "handle", type = "u64" },
+]
